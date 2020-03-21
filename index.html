@@ -1,79 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="style.css"><link href="https://fonts.googleapis.com/css?family=Girassol&display=swap" rel="stylesheet">
-    
-  <script src="script.js"></script>
-  <title>TIC TAC TOE</title>
-     
-  
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tic Tac Toe</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 </head>
-<body >
 
-     <h1 id="game-display">WELCOME TO TIC TAC TOE GAME</h1>
-   
-    
-<div id="nop" style="display: block;">
-        <h2>
-                Enter the number of players
-            </h2>
-        <br>
-        <button id="mode" class="abc" value="sp" onclick="nopl('sp');">Single Player</button>&nbsp;
-        <button id="mode" class="abc" value="mp" onclick="nopl('mp');">Two Players</button></div>
+<body>
+    <div class="container">
+        <div class="sideBar">
+            <img src="images/COPS_new.png" style="height: 279px; width: 346px; padding-left: 10px;" alt="COPS Logo">
+            <br>
+            <br>
+            <img src="images/tictactoe.svg" style="height: 246px; width: 246px; padding-left: 65px;" alt="Tic Tac Toe">
+            <br>
+            <br>
+            <br>
+            <button onclick="restartGame()" class="replayButton"> Replay </button>
+            <br>
+            <button onclick="goToHome()" class="gotoButton"> Home </button>
 
+            <h1 class="text1">&copy; Ankit Kumar Sharma</h1>
+        </div>
 
+        <div class="main">
+            <!--<div class="imgContainer">
+      <img src="bg.png" style="position: absolute; height: 100%; width:100%;">
+    </div>-->
+            <div class="darkMode">
+                <img src="images/night.png" name="darkcheck" class="dark" id="darkBox" onclick="darkModeSwitcher()">
+            </div>
+            <div class="button1">
+                <h1 class="titleText"> Tic Tac Toe </h1>
+                <button onclick="newGame()" class="newGameButton"> Wanna Play? </button>
+            </div>
 
+            <div class="chooseXO" id="overlay">
+                <div class="overlayContent">
+                    <h1 class="symbolH1">Choose a symbol for player 1:</h1>
+                    <button class="XObutton XOhover XOclicked Xbut" onclick="Xclicked()">X</button>
+                    <button class="XObutton XOhover XOclicked Obut" onclick="Oclicked()">O</button>
+                    <br>
+                    <h1 class="symbolH1">Write the name of player 1:</h1>
+                    <input type="text" id="p1Name" placeholder="Name of Player 1" class="p1NameText">
+                    <br>
+                    <br>
+                    <div class="subButton">
+                        <button class="submit" onclick="nameStore()"> Submit </button>
+                    </div>
+                </div>
+            </div>
 
-    <div id="mark" style="display: none;">
-        <br>
-      <h2>
-                What would you like to choose?
-            </h2>
-        <br>
-        <button id="mark" value="sp" onclick="choice('X'); namer()  ">X</button>&nbsp;
-        <button id="mark" value="mp" onclick="choice('O');playersName();" >O</button>
+            <div class="VSchoose" id="VSoverlay">
+                <div class="VSContent">
+                    <h1 class="symbolVS">Are you playing with:</h1>
+                    <button class="VSbutton VShover VSclicked PLbut" onclick="VSplClicked()"><img src="images/humanWhite.png" height="80px" width="80px" alt="Human"></button>
 
+                    <button class="VSbutton VShover VSclicked AIbut" onclick="VSaiClicked()"><img src="images/aiWhite.png" height="80px" width="80px" alt="AI"></button>
+                    
+                    <br>
+                    <h1 class="symbolVSH1">Write the name of player 2:</h1>
+                    <input type="text" id="p2Name" placeholder="Name of Player 2" class="p2NameText">
+                    <br>
+                    <br>
+                    <div class="startButton">
+                        <button class="start" onclick="basStartKarRhaHoon()"> Start </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gameBoard">
+                <table>
+                    <tr id="tabRow1">
+                        <td class="mini" id="0"></td>
+                        <td class="mini" id="1"></td>
+                        <td class="mini" id="2"></td>
+                    </tr>
+                    <tr id="tabRow2">
+                        <td class="mini" id="3"></td>
+                        <td class="mini" id="4"></td>
+                        <td class="mini" id="5"></td>
+                    </tr>
+                    <tr id="tabRow3">
+                        <td class="mini" id="6"></td>
+                        <td class="mini" id="7"></td>
+                        <td class="mini" id="8"></td>
+                    </tr>
+                </table>
+
+                <div class="winner">
+                    <div class="text"></div>
+                </div>
+            </div>
+        </div>
     </div>
-        <div id="name" style="display: none;">
-        <h2>
-                Enter name of each player
-            </h2>
-        <br>
-        <br>
-        <form id="form1" class="sf"> Player 1 Name:
-            <input type="text" id="p1name" placeholder="Player 1">
-            <br>
-            <br>
-            Player 2 Name:
-            <input type="text" id="p2name" placeholder="Player 2">
-            <br>
-            <br>
-            <input type="button" id="Submit" class="sub" onclick="playersName(); namer()" value="Submit">
-        </form>
-    </div>
-
-
-
-
-
-    <div class="game-board" id="board2" style="display: none;">
-    <div id="row-1">
-    <div id="zero" onclick="play(this,0,0);"></div>
-    <div id="one" onclick="play(this,0,1);"></div>
-    <div id="two" onclick="play(this,0,2);"></div>
-   </div>
-   <div id="row-2">
-    <div id="three" onclick="play(this,1,0);"></div>
-    <div id="four" onclick="play(this,1,1);"></div>
-    <div id="five" onclick="play(this,1,2);"></div>
-   </div>
-   <div id="row-3">
-    <div id="six" onclick="play(this,2,0);"></div>
-    <div id="seven" onclick="play(this,2,1);"></div>
-    <div id="eight" onclick="play(this,2,2);"></div>
-   </div> 
-   
-  </div>
+    <script src="main.js"></script>
 </body>
+
 </html>

@@ -1,403 +1,325 @@
-let board = [[' ',' ',' '],
-             [' ',' ',' '],
-             [' ',' ',' ']] ; 
-  
-var players = ['PLAYER 1', 'PLAYER 2'];
-var markers=["X","O"];
-var win=false;
-var turn =0;
-var besti=0;
-  var bestj=0;
-var avail=true;
-var a,b;
-let gamePlay= null;
-var winner =null;
-var k=1;
-var res;
-function nopl(clickedMode)
-{
-  gameplay = clickedMode;
-  document.getElementById("nop").style.display = "none" ;
-  document.getElementById("mark").style.display ="block";
-  if(clickedMode== "sp")
-  {
-    players[1]= "COMPUTER";
+var arr;
+var dPlayer = 'O';
+var aiPlayer = 'X';
+var player1='X', player2='O';
+let player1Name="1st Player", player2Name="2nd Player";
+var vs="AI";
+var tempVar=0, turnPL=0;
+var cells = document.querySelectorAll('.mini');
+const winStates = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
 
-  }
-}
-
-
- function choice(chosenMarker)
- {
-  if(chosenMarker == 'O')
-  {
-    markers = ["O", "X"];
-
-  }
-  
-  document.getElementById("mark").style.display = "none";
-  if(gameplay == 'sp')
-    playersName();
-  if(gameplay == 'mp')
-
-    document.getElementById("name").style.display = "block";
-  }
-  function namer()
-  {
-  document.getElementById("board2").style.display ="block";
-   document.getElementById("name").style.display = "none";
-  }
-function playersName()
-{
-
-  
-  if(gameplay == 'mp')
-  {
-    let n1 =document.getElementById("p1name").value;
-    let n2 =document.getElementById("p2name").value;
-    if((n1 != "")&&(n1 !=" ")) players[0] =n1;
-    if((n2 != "")&&(n1 !=" ")) players[1] =n2;
-    
-  }
-
-}
-function win123(win)
-{
-   if(win==true)
-  {
-   
-    
-    available()
-    if(avail==false && winner==null)
-    document.getElementById("game-display").innerText = "TIE MATCH";
-      else
-     document.getElementById("game-display").innerText = players[turn]+" WINS";
-  
-  return 1;
-}
-else return 0;
-
-}
-function play(clickedDiv,a,b)
-{
-      
-   board[a][b] = markers[turn];
-   
-  var win= winCheck();
-   res=win123(win);
-   if(res==1)
-   {
-    if(k==1)
-    {
-      k++;
-     clickedDiv.onclick = "" ;
-    
-    clickedDiv.innerHTML = "<span>" + markers[turn] + "</span>";
+document.addEventListener('keyup', event => {
+    if (event.code === 'Escape') {
+        restartGame();
     }
-   }
-  if(res==0)
-   {
-    clickedDiv.onclick = "" ;
-    clickedDiv.innerHTML = "<span>" + markers[turn] + "</span>";
+})
 
-    if(res==0)
-      {
-        
-        available();
-        if(avail)
-        {
-        
-        togglePlayer();
-        document.getElementById("game-display").innerText = players[turn]+"'s TURN";
-        if(players[turn]=='Computer')
-        {
-            bestMove();
-            board[besti][bestj]=markers[1];
-            var a=(besti*2)+besti+bestj;
-            available();
-            switch(a)
-            {
-              case 0:
-              document.getElementById("zero").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 1:
-              document.getElementById("one").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 2:
-              document.getElementById("two").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 3:
-              document.getElementById("three").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 4:
-              document.getElementById("four").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 5:
-              document.getElementById("five").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 6:
-              document.getElementById("six").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 7:
-              document.getElementById("seven").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-              case 8:
-              document.getElementById("eight").innerHTML ="<span>"+ markers[1]+ "</span>";
-              break;
-            }
-             var win= winCheck();
-             res=win123(win)
-             if(res==1)
-             {
-            if(k==1)
-            {
-            k++;
-            clickedDiv.onclick = "" ;
-    
-           clickedDiv.innerHTML = "<span>" + markers[1] + "</span>";
-            }
-            }
-             if(avail==true && res==0)
-             {
-              document.getElementById("game-display").innerText = players[turn]+"'s TURN";
-               togglePlayer();
-             }
-          }
-          }
-      
-         }
-   }
- }
-        function gameMessage(message=false)
-       {
-         
-         if(!message) {
+function darkModeSwitcher() {
+  tempVar++;
+  if (tempVar%2==1) {
+    document.getElementById("darkBox").src = "images/day_new.png";
+    document.body.style.backgroundColor = "#222";
+        document.querySelector(".titleText").style.color = "#FFFF32";
+        document.querySelector(".newGameButton").style.backgroundColor = "#FFFF32";
+        document.querySelector(".newGameButton").style.color = "#000";
+        document.querySelector("table").style.color = "#FFFE12";
 
-         document.getElementById("game-display").innerText = message;
+        var td = document.getElementsByClassName("mini");
+        for (let i = 0; i < td.length; i++) {
+            td[i].style.borderColor = "#AAA111";
         }
-           else
-         document.getElementById("game-display").innerText = players[turn]+"'s TURN";
-         }
-
-
-
-      function available()
-        {
-        avail=false;
-       for(let i = 0 ; i < 3 ; i++)
-       for(let j = 0 ; j < 3 ; j++)
-       {
-         if(board[i][j]==" ")
-         avail = true;
-       }
-        
-        }
-
-   
-
-function togglePlayer()
-{
-  if(turn==0)
-  {
-    turn=1;
-
   }
-  else
-    turn=0;
+  else {
+    document.getElementById("darkBox").src = "images/night.png";
+    document.body.style.backgroundColor = "#FFFF32";
+        document.querySelector(".titleText").style.color = "#111111";
+        document.querySelector(".newGameButton").style.backgroundColor = "#000";
+        document.querySelector(".newGameButton").style.color = "#FFF";
+        document.querySelector("table").style.color = "#000";
+
+        var td = document.getElementsByClassName("mini");
+        for (let i = 0; i < td.length; i++) {
+            td[i].style.borderColor = "#333";
+        }
+  }
 }
 
-function equals3(a, b, c) {
-  
-  if( (a == b) && (b == c )&&( a != ' '))
-    return true;
-  else
+function Xclicked() {
+    player1 = 'X';
+    document.querySelector(".Xbut").style.backgroundColor = "#830a33";
+    document.querySelector(".Obut").style.backgroundColor = "#333332";
+}
+
+function Oclicked() {
+    player1 = 'O';
+    document.querySelector(".Obut").style.backgroundColor = "#830a33";
+    document.querySelector(".Xbut").style.backgroundColor = "#333332";
+}
+
+function nameStore() {
+    document.querySelector(".VSchoose").style.display = "block";
+    document.getElementById("VSoverlay").style.width = "75%";
+}
+
+//------------
+
+function VSplClicked() {
+    if(player1=='O')
+      player2='X';
+  else if(player1=='X')
+    player2='O';
+
+  vs="PL";
+
+    document.querySelector(".PLbut").style.backgroundColor = "#830a33";
+    document.querySelector(".AIbut").style.backgroundColor = "#333332";
+    document.querySelector(".symbolVSH1").style.display = "block";
+    document.querySelector(".p2NameText").style.display = "block";
+    document.querySelector(".VSContent").style.paddingRight = "0px";
+}
+
+function VSaiClicked() {
+    document.querySelector(".AIbut").style.backgroundColor = "#830a33";
+    document.querySelector(".PLbut").style.backgroundColor = "#333332";
+    document.querySelector(".symbolVSH1").style.display = "none";
+    document.querySelector(".p2NameText").style.display = "none";
+    document.querySelector(".VSContent").style.paddingRight = "30px";
+
+    vs="AI";
+
+    dPlayer=player1;
+    if(player1=='O')
+      aiPlayer='X';
+  else if(player1=='X')
+    aiPlayer='O';
+}
+
+//------------
+
+function newGame() {
+    document.querySelector(".VSchoose").style.display = "none";
+    document.getElementById("VSoverlay").style.width = "0%";
+    document.querySelector(".gameBoard").style.display = "none";
+    document.querySelector("table").style.display = "none";
+    document.querySelector(".replayButton").style.display = "none";
+    document.querySelector(".gotoButton").style.display = "none";
+    document.querySelector(".chooseXO").style.display = "block";
+    document.getElementById("overlay").style.width = "75%";
+}
+
+function basStartKarRhaHoon() {
+  let name1=document.getElementById("p1Name").value;
+  let name2=document.getElementById("p2Name").value;
+
+  if(name1 != "")
+      player1Name = name1.substring(0,10);
+  if(name2 != "")
+      player2Name = name2.substring(0,10);
+
+    var v = confirm("Should we start the game?");
+    if (v == true) {
+        document.querySelector(".VSchoose").style.display = "none";
+        document.getElementById("VSoverlay").style.width = "0%";
+        document.getElementById("overlay").style.width = "0%";
+        document.querySelector(".newGameButton").style.display = "none";
+        document.querySelector(".titleText").style.display = "none";
+        document.querySelector("table").style.display = "block";
+        document.querySelector(".gameBoard").style.display = "block";
+        document.querySelector(".replayButton").style.display = "block";
+        document.querySelector(".gotoButton").style.display = "block";
+        document.querySelector(".chooseXO").style.display = "none";
+        StartGame();
+    } else {
+        newGame();
+    }
+}
+
+function StartGame() {
+    document.querySelector(".winner").style.display = "none";
+    turnPL=0;
+    arr = Array.from(Array(9).keys());
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].innerText = '';
+        cells[i].style.removeProperty('background-color');
+        cells[i].addEventListener("click", afterClick);
+    }
+}
+
+function restartGame() {
+    var r = confirm("Do you want to restart the game?");
+    if (r == true) {
+        StartGame();
+    }
+}
+
+function goToHome(){
+  var r = confirm("Do you want to go to Home Page?");
+    if (r == true)
+      location.reload();
+}
+
+function afterClick(box) {
+    if (typeof arr[box.target.id] == 'number') {
+
+        if (vs=="AI") {
+          turn(box.target.id, dPlayer);
+
+          if (!checkTie()) 
+            turn(bestSpot(), aiPlayer);
+    }
+        else if (vs=="PL") {
+        if(turnPL%2==0)
+          turn(box.target.id, player1);
+        else 
+          turn(box.target.id, player2);
+      
+        let x=checkTie();
+        turnPL++;
+        }
+    }
+}
+
+function turn(boxID, player) {
+    arr[boxID] = player;
+    document.getElementById(boxID).innerText = player;
+    let winningPlayer = checkWin(arr, player)
+    if (winningPlayer) gameOver(winningPlayer)
+}
+
+function checkWin(board, player) {
+    let plays = board.reduce((acc, current, ind) => (current === player) ? acc.concat(ind) : acc, []);
+
+    let winningPlayer = null;
+    for (let [index, win] of winStates.entries()) {
+        if (win.every(elt => plays.indexOf(elt) >= 0)) {
+            winningPlayer = {
+                index: index,
+                player: player
+            };
+            break;
+        }
+    } 
+    return winningPlayer;
+}
+
+function gameOver(winningPlayer) {
+
+  if(vs=="AI") {
+      for (let index of winStates[winningPlayer.index]) {
+          document.getElementById(index).style.backgroundColor = ((winningPlayer.player == dPlayer) ? "green" : "red");
+      }
+      for (var i = 0; i < cells.length; i++) {
+          cells[i].removeEventListener("click", afterClick);
+      }
+      declareWinner(winningPlayer.player == dPlayer ? "You Win!" : "You Lose.");
+  }
+  else if(vs=="PL") {
+      for (let index of winStates[winningPlayer.index]) {
+          document.getElementById(index).style.backgroundColor = "green";
+      }
+      for (var i = 0; i < cells.length; i++) {
+          cells[i].removeEventListener("click", afterClick);
+      }
+
+      if(winningPlayer.player == player1)
+        declareWinner(String(player1Name + " Wins!"));
+      else
+        declareWinner(String(player2Name + " Wins!"));
+  }
+}
+
+function declareWinner(who) {
+    document.querySelector(".winner").style.display = "block";
+  document.querySelector(".winner .text").innerText = who;
+}
+
+function emptySpots() {
+  let blankSpots = [], k=0;
+  for (let i = 0; i < 9; i++)
+    if (typeof arr[i] == 'number') 
+      blankSpots[k++]=i;
+
+  return blankSpots;
+}
+
+function bestSpot() {
+    return minimax(arr, aiPlayer).index;
+}
+
+function checkTie() {
+    if (emptySpots().length == 0) {
+        for (var i = 0; i < cells.length; i++) {
+            cells[i].style.backgroundColor = "grey";
+            cells[i].removeEventListener("click", afterClick);
+        }
+        declareWinner("Game Tie!")
+        return true;
+    }
     return false;
 }
 
-function winCheck() 
-{ 
-  
-  // horizontal
-  
-  for (let i = 0; i < 3; i++)
-   {
-    
-    if (equals3(board[i][0], board[i][1], board[i][2]))  {
-     
-      win=true;
-      winner=board[i][0];
-      return true;
-    }
-  }
-     // Vertical
- 
-  for (let i = 0; i < 3; i++) {
-    
-    if (equals3(board[0][i], board[1][i], board[2][i]))  {
-  
-       win=true;
-       winner=board[0][i];
-       return true;
-     }
+function minimax(newBoard, player) {
+    var spots = emptySpots();
+
+    if (checkWin(newBoard, dPlayer)) {
+        return {
+            score: -10
+        };
+    } else if (checkWin(newBoard, aiPlayer)) {
+        return {
+            score: 10
+        };
+    } else if (spots.length === 0) {
+        return {
+            score: 0
+        };
     }
 
-  // Diagonal
-  
-  if (equals3(board[0][0], board[1][1], board[2][2]))  {
-     win=true;
-     winner=board[0][0];
-     return true;  
-   }
-  
-  if (equals3(board[2][0], board[1][1], board[0][2])) {
-    win=true;
-   winner=board[2][0];
-     return true;;
-   
-   }
-   available();
-   if (winner==null && avail == false)
-    {
-      win=true;
+    var moves = [];
+    for (var i = 0; i < spots.length; i++) {
+        var move = {};
+        move.index = newBoard[spots[i]];
+        newBoard[spots[i]] = player;
 
-    
-    } 
-  else 
-  {
-    win=false;
-    return win;
-  }
-
-  
-
-  }
-  function winforai() 
-  { 
-  var winner=null;
-  // horizontal
-  
-  for (let i = 0; i < 3; i++)
-   {
-
-    if (equals3(board[i][0], board[i][1], board[i][2]))  {
-      winner=board[i][0];
-      win=true;
-    }
-  }
-    
-
-  // Vertical
- 
-  for (let i = 0; i < 3; i++) {
-    
-    if (equals3(board[0][i], board[1][i], board[2][i]))  {
-  
-       win=true;
-       winner=board[0][i];
-       
-     }
-    }
-
-  // Diagonal
-  
-  if (equals3(board[0][0], board[1][1], board[2][2])) 
-  { 
-     winner=board[0][0];  
-     win=true;
-   }
-   
-  
-  if (equals3(board[2][0], board[1][1], board[0][2])) 
-  {
-   winner=board[2][0];
-    win=true;
-   }
-      available();
-   if (win==false && avail == false)
-    {
-      return 'tie';
-    }
-    else
-    return winner; 
-  }
-
-
-function bestMove() 
-{
-  
-  let bestScore = -Infinity;
-  for (let i = 0; i < 3; i++) 
-  {
-    for (let j = 0; j < 3; j++) 
-    {
-      // to check if available
-      if (board[i][j] == ' ')
-       {
-        board[i][j] = markers[1];
-        let score = minimax(board, 0, false);
-        board[i][j] = ' ';
-        if (score > bestScore) 
-        {
-          bestScore = score;
-          besti=i;
-          bestj=j;
-
+        if (player == aiPlayer) {
+            var result = minimax(newBoard, dPlayer);
+            move.score = result.score;
+        } else {
+            var result = minimax(newBoard, aiPlayer);
+            move.score = result.score;
         }
-      }
+
+        newBoard[spots[i]] = move.index;
+        moves.push(move);
     }
-  }
-  }
 
-let scores = {
-  X: 1,
-  O: -1,
-  tie: 0
-};
-
-function minimax(board, depth, isMaximizing)
- {
-  let result = winforai();
-  if (result !== null) 
-  {
-    return scores[result];
-  }
-
-  if (isMaximizing) 
-  {
-    let bestScore = -Infinity;
-    for (let i = 0; i < 3; i++) 
-    {
-      for (let j = 0; j < 3; j++) 
-      {
-        // availability check
-        if (board[i][j] == ' ') 
-        {
-          board[i][j] = markers[1];
-          let score = minimax(board, depth + 1, false);
-          board[i][j] = ' ';
-          bestScore = Math.max(score, bestScore);
+    var bestMove;
+    if (player === aiPlayer) {
+        var bestScore = -10000;
+        for (var i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
         }
-      }
-    }
-    return bestScore;
-  } 
-  else 
-  {
-    let bestScore = Infinity;
-    for (let i = 0; i < 3; i++) 
-    {
-      for (let j = 0; j < 3; j++) 
-      {
-        // Is the spot available?
-        if (board[i][j] == ' ')
-         {
-          board[i][j] = markers[0];
-          let score = minimax(board, depth + 1, true);
-          board[i][j] = ' ';
-          bestScore = Math.min(score, bestScore);
+    } else {
+        var bestScore = 10000;
+        for (var i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
         }
-      }
     }
-    return bestScore;
-  }
-  }
+
+    return moves[bestMove];
+}
